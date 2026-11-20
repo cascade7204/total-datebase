@@ -1,0 +1,28 @@
+name: Validate ekiden records
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop]
+    paths:
+      - 'results_2025.csv'
+      - 'results_2026.csv'
+      - 'validate_records.py'
+      - '.github/workflows/validate-records.yml'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python validate_records.py
+      - name: Save validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ekiden-validation-report
+          path: validation_report.json
+          if-no-files-found: warn
