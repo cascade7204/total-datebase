@@ -91,15 +91,25 @@ function render(){
  results.appendChild(fragment);
 }
 
-fetch("./data/results.csv")
- .then(r=>{if(!r.ok)throw Error("CSVが見つかりません");return r.text()})
- .then(text=>{
-  records=parseCSV(text.replace(/^\uFEFF/,""));
+Promise.all([
+  fetch("./data/results.csv"),
+  fetch("./results_2025.csv")
+])
+.then(responses => {
+  if (responses.some(r => !r.ok)) {
+    throw Error("CSVが見つかりません");
+  }
+  return Promise.all(responses.map(r => r.text()));
+})
+.then(texts => {
+  records = texts.flatMap(text =>
+    parseCSV(text.replace(/^\uFEFF/, ""))
+  );
   render();
- })
- .catch(()=>{
-  status.textContent="データを読み込めませんでした。CSVの公開設定が必要です。";
- });
+})
+.catch(() => {
+  status.textContent = "データを読み込めませんでした。CSVの公開設定が必要です。";
+});
 search.addEventListener("input",render);
 </script>
 </body>
