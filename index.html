@@ -2,13 +2,13 @@
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>陸上競技データベース（開発版）</title>
 <style>
-*{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f6f8;color:#202632;margin:0}header{background:#183b62;color:#fff;padding:22px 16px}header>div,main{max-width:1050px;margin:auto}h1{font-size:22px;margin:0 0 5px}header p{margin:0;opacity:.85;font-size:13px}main{padding:18px 14px}.panel{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:17px;margin-bottom:15px}.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-size:13px;font-weight:600;display:block}input,select{width:100%;font:inherit;font-size:15px;margin-top:5px;padding:11px;border:1px solid #cbd3dd;border-radius:8px;background:white}button{font:inherit;cursor:pointer;border-radius:8px;padding:10px 15px;border:1px solid #bdc8d5;background:white;color:#183b62}button.primary{background:#183b62;color:white;border-color:#183b62}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #82b5ee}button:disabled{opacity:.45;cursor:default}.actions{display:flex;gap:10px;margin-top:14px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.tabs button[aria-selected=true]{background:#183b62;color:#fff}.muted{color:#5d6a7b;font-size:13px}.notice{background:#fff8e6;border:1px solid #efd9a0;border-radius:8px;padding:12px;font-size:13px;margin-bottom:14px}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:11px 10px;border-bottom:1px solid #e7ebef;text-align:left;white-space:nowrap}th{background:#f1f4f8;color:#39495d}td button{padding:3px 0;border:0;background:transparent;text-decoration:underline;color:#174b7c;text-align:left}.record{margin-top:8px;padding:9px;background:#f5f7fa;border-radius:6px}.detail h2{font-size:19px;margin:0 0 10px}.detail h3{font-size:15px;margin:16px 0 6px}.footer{margin:12px 0;display:flex;gap:12px;align-items:center}.empty{padding:24px;text-align:center;color:#68778a}.race-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.race-tabs button[aria-selected="true"]{background:#183b62;color:#fff}.expand-row td{background:#f7f9fc;white-space:normal}.expand-row table{background:#fff}.mobile{display:none}.subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.subtabs button[aria-selected="true"]{background:#183b62;color:white}.linklike{border:0;background:none;padding:2px;color:#174b7c;text-decoration:underline}.hint{font-size:13px;color:#5d6a7b;margin:9px 0}
+*{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f6f8;color:#202632;margin:0}header{background:#183b62;color:#fff;padding:22px 16px}header>div,main{max-width:1050px;margin:auto}h1{font-size:22px;margin:0 0 5px}header p{margin:0;opacity:.85;font-size:13px}main{padding:18px 14px}.panel{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:17px;margin-bottom:15px}.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-size:13px;font-weight:600;display:block}input,select{width:100%;font:inherit;font-size:15px;margin-top:5px;padding:11px;border:1px solid #cbd3dd;border-radius:8px;background:white}button{font:inherit;cursor:pointer;border-radius:8px;padding:10px 15px;border:1px solid #bdc8d5;background:white;color:#183b62}button.primary{background:#183b62;color:white;border-color:#183b62}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #82b5ee}button:disabled{opacity:.45;cursor:default}.actions{display:flex;gap:10px;margin-top:14px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.tabs button[aria-selected=true]{background:#183b62;color:#fff}.muted{color:#5d6a7b;font-size:13px}.notice{background:#fff8e6;border:1px solid #efd9a0;border-radius:8px;padding:12px;font-size:13px;margin-bottom:14px}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:11px 10px;border-bottom:1px solid #e7ebef;text-align:left;white-space:nowrap}th{background:#f1f4f8;color:#39495d}td button{padding:3px 0;border:0;background:transparent;text-decoration:underline;color:#174b7c;text-align:left}.record{margin-top:8px;padding:9px;background:#f5f7fa;border-radius:6px}.detail h2{font-size:19px;margin:0 0 10px}.detail h3{font-size:15px;margin:16px 0 6px}.footer{margin:12px 0;display:flex;gap:12px;align-items:center}.empty{padding:24px;text-align:center;color:#68778a}.race-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.race-tabs button[aria-selected="true"]{background:#183b62;color:#fff}.expand-row td{background:#f7f9fc;white-space:normal}.expand-row table{background:#fff}.mobile{display:none}.subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.subtabs button[aria-selected="true"]{background:#183b62;color:white}.linklike{border:0;background:none;padding:2px;color:#174b7c;text-decoration:underline}.hint{font-size:13px;color:#5d6a7b;margin:9px 0}.detail-nav{display:flex;gap:10px;margin-bottom:14px}.detail-nav button{font-weight:600}
 @media(max-width:640px){.filters{grid-template-columns:1fr}.desktop{display:none}.mobile{display:block}.entry{border-bottom:1px solid #e7ebef;padding:13px 0}.entry button{border:0;padding:0;text-decoration:underline;font-weight:600}.entry .muted{margin-top:5px}.panel{padding:13px}h1{font-size:20px}}
 </style></head><body>
 <header><div><h1>陸上競技データベース</h1><p>選手・チーム・大会記録を検索（開発版）</p></div></header>
 <main>
 <div class="notice">開発版：2025・2026年の全日本大学駅伝のみ収録。選手IDは区間記録ごとの仮IDで、同一人物の統合は未実施です。総合順位は未確認のため表示しません。総合タイムは暫定値です。</div>
-<section class="panel"><form id="form"><div class="filters">
+<div id="search-view"><section class="panel"><form id="form"><div class="filters">
 <label>選手名<input id="athlete" type="search" placeholder="選手名"></label>
 <label>チーム名<input id="team" type="search" placeholder="大学名"></label>
 <label>大会<select id="race"><option value="">すべて</option></select></label>
@@ -20,15 +20,46 @@
 <button type="button" data-tab="teams" role="tab" aria-selected="false">チーム</button>
 <button type="button" data-tab="results" role="tab" aria-selected="false">大会記録</button>
 </div><div id="listing"></div><div class="footer"><button type="button" id="more" hidden>さらに20件表示</button></div></section>
-<section class="panel detail" id="detail" hidden></section>
+</div><section class="panel detail" id="detail" hidden></section>
 </main><script>
 'use strict';
 const $=id=>document.getElementById(id);
 let data={},tab='athletes',limit=20,matched=[],criteria={};
 let view={kind:'search'}, restoring=false;
-function route(next,record=true){view=next;if(record&&!restoring)history.pushState(next,'','#'+[next.kind,next.id??''].join('/'));drawView();}
-function drawView(){if(view.kind==='athlete')renderAthlete(view.id);else if(view.kind==='team')renderTeam(view.id);else if(view.kind==='race')showRace(view.id);else{$('detail').hidden=true;$('listing').scrollIntoView({block:'nearest'});}}
-function detailShell(title){const box=$('detail');box.replaceChildren();const back=el('button','検索結果に戻る');back.type='button';back.onclick=()=>history.back();box.append(back,el('h2',title));box.hidden=false;box.scrollIntoView({block:'start'});return box;}
+const allowedKinds=new Set(['search','athlete','team','race']);
+function parseHash(){
+ const match=location.hash.match(/^#\/(search|athlete|team|race)(?:\/([^/?#]+))?$/);
+ if(!match)return {kind:'search'};
+ const kind=match[1];if(kind==='search')return {kind};
+ try{return {kind,id:decodeURIComponent(match[2]||'')}}catch{return {kind:'search'}}
+}
+function routeUrl(next){return next.kind==='search'?'#/search':`#/${next.kind}/${encodeURIComponent(next.id)}`}
+function showSearch(){
+ $('search-view').hidden=false;$('detail').hidden=true;
+}
+function route(next,record=true){
+ if(!allowedKinds.has(next.kind))return;
+ if(view.kind==='search')history.replaceState({...history.state,view:{kind:'search'},scrollY:window.scrollY},'',location.href);
+ view=next;
+ if(record&&!restoring)history.pushState({view:next},'',routeUrl(next));
+ drawView();
+ if(next.kind!=='search')window.scrollTo(0,0);
+}
+function drawView(){
+ if(view.kind==='search'){showSearch();return}
+ $('search-view').hidden=true;
+ $('detail').hidden=false;
+ if(view.kind==='athlete')renderAthlete(view.id);
+ else if(view.kind==='team')renderTeam(view.id);
+ else if(view.kind==='race')showRace(view.id);
+}
+function detailShell(title){
+ const box=$('detail');box.replaceChildren();
+ const nav=el('div','','detail-nav'),back=el('button','← 検索結果に戻る');back.type='button';
+ back.onclick=()=>route({kind:'search'});
+ nav.append(back);box.append(nav,el('h2',title));box.hidden=false;return box;
+}
+function showMissing(){const box=detailShell('記録が見つかりません');box.append(el('p','指定された記録は現在のデータにありません。','muted'));}
 function linkedButton(label,fn){const b=el('button',label,'linklike');b.type='button';b.onclick=fn;return b;}
 function linkedTable(headers,rows){const wrap=el('div','','tablewrap'),table=el('table'),head=el('tr');headers.forEach(h=>head.append(el('th',h)));const thead=el('thead');thead.append(head);table.append(thead);const tbody=el('tbody');rows.forEach(cells=>{const tr=el('tr');cells.forEach(c=>{const td=el('td');if(c&&typeof c==='object'&&c.nodeType)td.append(c);else td.textContent=String(c??'—');tr.append(td)});tbody.append(tr)});table.append(tbody);wrap.append(table);return wrap;}
 function athleteLink(id){return linkedButton(nameBy(data.athletes,id),()=>route({kind:'athlete',id}));}
@@ -65,8 +96,8 @@ function rowValues(x){if(x.kind==='athlete'){
 function secs(t){if(!t)return Number.POSITIVE_INFINITY;const a=String(t).split(':').map(Number);return a.reduce((s,n)=>s*60+n,0)}
 function makeTable(headers,rows){const wrap=el('div','','tablewrap'),table=el('table'),thead=el('thead'),tr=el('tr');headers.forEach(h=>tr.append(el('th',h)));thead.append(tr);table.append(thead);const body=el('tbody');rows.forEach(row=>{const tr=el('tr');row.forEach(v=>tr.append(el('td',v)));body.append(tr)});table.append(body);wrap.append(table);return wrap}
 function showRace(raceId){
- const race=data.races.find(r=>r.id===raceId);if(!race)return;
- const box=detailShell(`${race.year}年 ${race.name}`);
+ const race=data.races.find(r=>String(r.id)===String(raceId));if(!race){showMissing();return;}
+ raceId=race.id;const box=detailShell(`${race.year}年 ${race.name}`);
  box.append(el('p','総合順位は公式記録との照合前のため未表示です。総合タイムは暫定値で、タイム順の並びは公式順位を意味しません。','notice'));
  const nav=el('div','','race-tabs');box.append(nav);const content=el('div');box.append(content);
  let active='overall';
@@ -87,10 +118,10 @@ function showRace(raceId){
   if(race.source_url){const p=el('p'),a=el('a','公式記録の出典を開く');a.href=race.source_url;a.target='_blank';a.rel='noopener noreferrer';p.append(a);content.append(p)}
   content.append(el('p','開催日など未登録の項目は、公式資料との照合後に追加します。','muted'));
  }
- }renderRace();box.hidden=false;box.scrollIntoView({behavior:'smooth',block:'start'});
+ }renderRace();box.hidden=false;
 }
 function renderAthlete(id){
- const a=data.athletes.find(x=>x.id===id);if(!a)return;const box=detailShell(a.name);
+ const a=data.athletes.find(x=>String(x.id)===String(id));if(!a){showMissing();return;}id=a.id;const box=detailShell(a.name);
  box.append(el('p','同一人物の照合前の仮登録です。別年度の同姓同名記録は自動統合していません。','notice'));
  const rows=data.performances.filter(p=>p.athlete_id===id).sort((a,b)=>b.year-a.year||a.leg-b.leg);
  box.append(el('h3','駅伝出走記録'));
@@ -104,7 +135,7 @@ function renderAthlete(id){
  box.append(el('p','在籍年度の情報が整い次第、追加します。','hint'));
 }
 function renderTeam(id){
- const team=data.teams.find(x=>x.id===id);if(!team)return;const box=detailShell(team.name);
+ const team=data.teams.find(x=>String(x.id)===String(id));if(!team){showMissing();return;}id=team.id;const box=detailShell(team.name);
  box.append(el('p',`区分：${team.category||'未確認'} ／ 所在地：未登録`,'muted'));
  const nav=el('div','','subtabs'),content=el('div');box.append(nav,content);let active='members';
  const rows=data.performances.filter(p=>p.team_id===id);
@@ -130,11 +161,18 @@ async function init(){try{
  [...new Set(data.races.map(r=>r.name))].forEach(n=>{const o=el('option',n);o.value=n;$('race').append(o)});
  [...new Set(data.races.map(r=>r.year))].sort((a,b)=>b-a).forEach(y=>{const o=el('option',y);o.value=y;$('year').append(o)});
  search();
+ view=parseHash();history.replaceState({view,scrollY:0},'',location.href);
+ drawView();if(view.kind!=='search')window.scrollTo(0,0);
  }catch(e){$('status').textContent=`読み込みに失敗しました：${e.message}`;document.querySelectorAll('button').forEach(b=>b.disabled=true);}}
 $('form').addEventListener('submit',e=>{e.preventDefault();route({kind:'search'});search()});
 $('reset').addEventListener('click',()=>{$('form').reset();route({kind:'search'});search()});
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;limit=20;route({kind:'search'});render()}));
 $('more').addEventListener('click',()=>{limit+=20;render()});
-window.addEventListener('popstate',e=>{restoring=true;view=e.state||{kind:'search'};drawView();restoring=false});
+window.addEventListener('popstate',e=>{
+ restoring=true;view=e.state?.view||parseHash();drawView();
+ if(view.kind==='search')requestAnimationFrame(()=>window.scrollTo(0,e.state?.scrollY||0));
+ else window.scrollTo(0,0);
+ restoring=false;
+});
 init();
 </script></body></html>
