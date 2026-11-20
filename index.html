@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>陸上競技データベース</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,sans-serif;margin:0;background:#f5f6f8;color:#202632}
+header{background:#183b62;color:white;padding:22px 16px}
+h1{font-size:21px;margin:0 0 6px}
+header p{margin:0;font-size:13px;opacity:.85}
+main{max-width:900px;margin:auto;padding:16px}
+input{width:100%;padding:14px;border:1px solid #ccd3db;border-radius:9px;font-size:16px}
+#status{font-size:13px;color:#596579;margin:14px 0}
+.card{background:white;border-radius:10px;padding:15px;margin:10px 0;box-shadow:0 1px 4px #0001}
+.name{font-size:17px;font-weight:bold;margin-bottom:6px}
+.meta{font-size:13px;color:#526074}
+.record{font-size:14px;margin-top:9px}
+.time{font-weight:bold;color:#183b62}
+.empty{padding:30px 12px;text-align:center;color:#667085}
+</style>
+</head>
+<body>
+<header>
+<h1>陸上競技データベース</h1>
+<p>選手・大学・大会・年度から記録を検索</p>
+</header>
+<main>
+<input id="search" type="search" placeholder="選手名・大学名・大会名・年度を入力">
+<div id="status">データを読み込み中...</div>
+<div id="results"></div>
+</main>
+<script>
+let records=[];
+const search=document.getElementById("search");
+const status=document.getElementById("status");
+const results=document.getElementById("results");
+
+function parseCSV(text){
+ const rows=[];
+ let row=[],field="",quoted=false;
+ for(let i=0;i<text.length;i++){
+  const c=text[i];
+  if(c==='"'){
+   if(quoted&&text[i+1]==='"'){field+='"';i++}
+   else quoted=!quoted;
+  }else if(c===','&&!quoted){
+   row.push(field);field="";
+  }else if((c==='\n'||c==='\r')&&!quoted){
+   if(c==='\r'&&text[i+1]==='\n')i++;
+   row.push(field);field="";
+   if(row.some(x=>x!==""))rows.push(row);
+   row=[];
+  }else field+=c;
+ }
+ if(field||row.length){row.push(field);rows.push(row)}
+ const headers=rows.shift()||[];
+ return rows.map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]||""])));
+}
+
+function addText(parent,tag,value,className){
+ const el=document.createElement(tag);
+ if(className)el.className=className;
+ el.textContent=value;
+ parent.appendChild(el);
+}
+
+function render(){
+ const q=search.value.trim().toLowerCase();
+ const filtered=records.filter(r=>
+  [r.athlete,r.team,r.race,r.year].some(v=>
+   String(v||"").toLowerCase().includes(q)
+  )
+ );
+ status.textContent=`${filtered.length}件表示 / 全${records.length}件`;
+ results.replaceChildren();
+ if(!filtered.length){
+  addText(results,"div","該当する記録がありません","empty");
+  return;
+ }
+ const fragment=document.createDocumentFragment();
+ for(const r of filtered.slice(0,300)){
+  const card=document.createElement("article");
+  card.className="card";
+  addText(card,"div",r.athlete||"選手名不明","name");
+  addText(card,"div",`${r.team||""} / ${r.year||""}年 / ${r.race||""}`,"meta");
+  addText(card,"div",`${r.leg||""}区　${r.leg_time||""}　区間${r.leg_rank||"-"}位`,"record");
+  fragment.appendChild(card);
+ }
+ results.appendChild(fragment);
+}
+
+fetch("./data/results.csv")
+ .then(r=>{if(!r.ok)throw Error("CSVが見つかりません");return r.text()})
+ .then(text=>{
+  records=parseCSV(text.replace(/^\uFEFF/,""));
+  render();
+ })
+ .catch(()=>{
+  status.textContent="データを読み込めませんでした。CSVの公開設定が必要です。";
+ });
+search.addEventListener("input",render);
+</script>
+</body>
+</html>
