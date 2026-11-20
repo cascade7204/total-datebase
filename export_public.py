@@ -18,7 +18,7 @@ def main():
         if not required <= present: raise ValueError('移行用データベースのテーブルが不足しています')
         athletes=[dict(r) for r in con.execute('SELECT id,display_name AS name,identity_status FROM athletes ORDER BY id')]
         teams=[dict(r) for r in con.execute('SELECT id,canonical_name AS name,category FROM teams ORDER BY id')]
-        races=[dict(r) for r in con.execute('SELECT id,name,year FROM races ORDER BY year DESC,id')]
+        races=[dict(r) for r in con.execute('SELECT id,name,year,event_date,source_url FROM races ORDER BY year DESC,id')]
         performances=[dict(r) for r in con.execute('''
             SELECT p.id,p.athlete_id,p.leg,p.leg_time,p.leg_rank,
                    tr.team_id,tr.team_number,tr.id AS team_race_id,
