@@ -1,116 +1,73 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>陸上競技データベース</title>
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>陸上競技データベース（開発版）</title>
 <style>
-*{box-sizing:border-box}
-body{font-family:system-ui,sans-serif;margin:0;background:#f5f6f8;color:#202632}
-header{background:#183b62;color:white;padding:22px 16px}
-h1{font-size:21px;margin:0 0 6px}
-header p{margin:0;font-size:13px;opacity:.85}
-main{max-width:900px;margin:auto;padding:16px}
-input{width:100%;padding:14px;border:1px solid #ccd3db;border-radius:9px;font-size:16px}
-#status{font-size:13px;color:#596579;margin:14px 0}
-.card{background:white;border-radius:10px;padding:15px;margin:10px 0;box-shadow:0 1px 4px #0001}
-.name{font-size:17px;font-weight:bold;margin-bottom:6px}
-.meta{font-size:13px;color:#526074}
-.record{font-size:14px;margin-top:9px}
-.time{font-weight:bold;color:#183b62}
-.empty{padding:30px 12px;text-align:center;color:#667085}
-</style>
-</head>
-<body>
-<header>
-<h1>陸上競技データベース</h1>
-<p>選手・大学・大会・年度から記録を検索</p>
-</header>
+*{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f6f8;color:#202632;margin:0}header{background:#183b62;color:#fff;padding:22px 16px}header>div,main{max-width:1050px;margin:auto}h1{font-size:22px;margin:0 0 5px}header p{margin:0;opacity:.85;font-size:13px}main{padding:18px 14px}.panel{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:17px;margin-bottom:15px}.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-size:13px;font-weight:600;display:block}input,select{width:100%;font:inherit;font-size:15px;margin-top:5px;padding:11px;border:1px solid #cbd3dd;border-radius:8px;background:white}button{font:inherit;cursor:pointer;border-radius:8px;padding:10px 15px;border:1px solid #bdc8d5;background:white;color:#183b62}button.primary{background:#183b62;color:white;border-color:#183b62}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #82b5ee}button:disabled{opacity:.45;cursor:default}.actions{display:flex;gap:10px;margin-top:14px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.tabs button[aria-selected=true]{background:#183b62;color:#fff}.muted{color:#5d6a7b;font-size:13px}.notice{background:#fff8e6;border:1px solid #efd9a0;border-radius:8px;padding:12px;font-size:13px;margin-bottom:14px}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:11px 10px;border-bottom:1px solid #e7ebef;text-align:left;white-space:nowrap}th{background:#f1f4f8;color:#39495d}td button{padding:3px 0;border:0;background:transparent;text-decoration:underline;color:#174b7c;text-align:left}.record{margin-top:8px;padding:9px;background:#f5f7fa;border-radius:6px}.detail h2{font-size:19px;margin:0 0 10px}.detail h3{font-size:15px;margin:16px 0 6px}.footer{margin:12px 0;display:flex;gap:12px;align-items:center}.empty{padding:24px;text-align:center;color:#68778a}.mobile{display:none}
+@media(max-width:640px){.filters{grid-template-columns:1fr}.desktop{display:none}.mobile{display:block}.entry{border-bottom:1px solid #e7ebef;padding:13px 0}.entry button{border:0;padding:0;text-decoration:underline;font-weight:600}.entry .muted{margin-top:5px}.panel{padding:13px}h1{font-size:20px}}
+</style></head><body>
+<header><div><h1>陸上競技データベース</h1><p>選手・チーム・大会記録を検索（開発版）</p></div></header>
 <main>
-<input id="search" type="search" placeholder="選手名・大学名・大会名・年度を入力">
-<div id="status">データを読み込み中...</div>
-<div id="results"></div>
-</main>
-<script>
-let records=[];
-const search=document.getElementById("search");
-const status=document.getElementById("status");
-const results=document.getElementById("results");
-
-function parseCSV(text){
- const rows=[];
- let row=[],field="",quoted=false;
- for(let i=0;i<text.length;i++){
-  const c=text[i];
-  if(c==='"'){
-   if(quoted&&text[i+1]==='"'){field+='"';i++}
-   else quoted=!quoted;
-  }else if(c===','&&!quoted){
-   row.push(field);field="";
-  }else if((c==='\n'||c==='\r')&&!quoted){
-   if(c==='\r'&&text[i+1]==='\n')i++;
-   row.push(field);field="";
-   if(row.some(x=>x!==""))rows.push(row);
-   row=[];
-  }else field+=c;
- }
- if(field||row.length){row.push(field);rows.push(row)}
- const headers=rows.shift()||[];
- return rows.map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]||""])));
+<div class="notice">開発版：2025・2026年の全日本大学駅伝のみ収録。選手IDは区間記録ごとの仮IDで、同一人物の統合は未実施です。総合順位は未確認のため表示しません。総合タイムは暫定値です。</div>
+<section class="panel"><form id="form"><div class="filters">
+<label>選手名<input id="athlete" type="search" placeholder="選手名"></label>
+<label>チーム名<input id="team" type="search" placeholder="大学名"></label>
+<label>大会<select id="race"><option value="">すべて</option></select></label>
+<label>年度<select id="year"><option value="">すべて</option></select></label>
+</div><div class="actions"><button class="primary" type="submit">検索</button><button type="button" id="reset">条件をクリア</button></div></form></section>
+<section class="panel"><div id="status" class="muted" role="status">データを読み込み中...</div>
+<div class="tabs" role="tablist" aria-label="検索結果の種類">
+<button type="button" data-tab="athletes" role="tab" aria-selected="true">選手</button>
+<button type="button" data-tab="teams" role="tab" aria-selected="false">チーム</button>
+<button type="button" data-tab="results" role="tab" aria-selected="false">大会記録</button>
+</div><div id="listing"></div><div class="footer"><button type="button" id="more" hidden>さらに20件表示</button></div></section>
+<section class="panel detail" id="detail" hidden></section>
+</main><script>
+'use strict';
+const $=id=>document.getElementById(id);
+let data={},tab='athletes',limit=20,matched=[],criteria={};
+const escapeText=x=>String(x??'');
+const nameBy=(list,id)=>list.find(x=>x.id===id)?.name||'不明';
+const el=(tag,text,cls)=>{const x=document.createElement(tag);if(cls)x.className=cls;x.textContent=escapeText(text);return x};
+function filteredPerformances(){return data.performances.filter(p=>{
+ const athlete=nameBy(data.athletes,p.athlete_id),team=nameBy(data.teams,p.team_id);
+ return (!criteria.athlete||athlete.toLocaleLowerCase().includes(criteria.athlete))&&
+ (!criteria.team||team.toLocaleLowerCase().includes(criteria.team))&&
+ (!criteria.race||p.race===criteria.race)&&(!criteria.year||String(p.year)===criteria.year);
+});}
+function search(){criteria={athlete:$('athlete').value.trim().toLocaleLowerCase(),team:$('team').value.trim().toLocaleLowerCase(),race:$('race').value,year:$('year').value};
+ tab=criteria.athlete?'athletes':criteria.team?'teams':criteria.race||criteria.year?'results':'athletes';limit=20;render();}
+function render(){const perf=filteredPerformances();const ids=new Set(perf.map(x=>x.athlete_id));const teamids=new Set(perf.map(x=>x.team_id));const trids=new Set(perf.map(x=>x.team_race_id));
+ matched=tab==='athletes'?data.athletes.filter(x=>ids.has(x.id)).map(x=>({kind:'athlete',...x})):tab==='teams'?data.teams.filter(x=>teamids.has(x.id)).map(x=>({kind:'team',...x})):data.team_results.filter(x=>trids.has(x.id)).map(x=>({kind:'result',...x}));
+ document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===tab)));
+ $('status').textContent=`${matched.length}件（${Math.min(limit,matched.length)}件表示）／該当する区間記録 ${perf.length}件`;
+ const list=$('listing');list.replaceChildren();const shown=matched.slice(0,limit);
+ if(!shown.length)list.append(el('div','該当する記録がありません','empty'));
+ else{const wrap=el('div','','desktop tablewrap'),table=el('table'),thead=el('thead'),head=el('tr');
+ const cols=tab==='athletes'?['選手名','所属（出走時）','年度']:tab==='teams'?['チーム名','区分','都道府県']:['年度','大会','チーム','順位','記録'];
+ cols.forEach(c=>head.append(el('th',c)));thead.append(head);table.append(thead);const tbody=el('tbody');
+ shown.forEach(x=>{const tr=el('tr');const values=rowValues(x);values.forEach((v,i)=>{const td=el('td');if(i===0||tab==='results'&&i===2){const b=el('button',v);b.type='button';b.addEventListener('click',()=>showDetail(x));td.append(b)}else td.textContent=v;tr.append(td)});tbody.append(tr)});table.append(tbody);wrap.append(table);list.append(wrap);
+ const mobile=el('div','','mobile');shown.forEach(x=>{const item=el('div','','entry'),vals=rowValues(x),b=el('button',tab==='results'?`${vals[0]} ${vals[1]} / ${vals[2]}`:vals[0]);b.type='button';b.addEventListener('click',()=>showDetail(x));item.append(b);item.append(el('div',vals.slice(tab==='results'?3:1).join(' / '),'muted'));mobile.append(item)});list.append(mobile)}
+ $('more').hidden=matched.length<=limit;
 }
-
-function addText(parent,tag,value,className){
- const el=document.createElement(tag);
- if(className)el.className=className;
- el.textContent=value;
- parent.appendChild(el);
+function rowValues(x){if(x.kind==='athlete'){
+ const p=data.performances.find(p=>p.athlete_id===x.id);return [x.name,p?nameBy(data.teams,p.team_id):'—',p?String(p.year):'—'];}
+ if(x.kind==='team')return [x.name,x.category||'—','—'];
+ return [String(x.year),x.race,nameBy(data.teams,x.team_id),'—',x.overall_time?x.overall_time+'（暫定）':'—'];}
+function showDetail(x){const box=$('detail');box.replaceChildren();const back=el('button','詳細を閉じる');back.type='button';back.addEventListener('click',()=>{box.hidden=true});box.append(back);
+ const heading=x.kind==='athlete'?x.name:x.kind==='team'?x.name:`${x.year}年 ${x.race} ${nameBy(data.teams,x.team_id)}`;box.append(el('h2',heading));
+ const rows=x.kind==='athlete'?data.performances.filter(p=>p.athlete_id===x.id):x.kind==='team'?data.performances.filter(p=>p.team_id===x.id):data.performances.filter(p=>p.team_race_id===x.id);
+ box.append(el('p','区間記録（現在の収録範囲）','muted'));
+ rows.forEach(p=>box.append(el('div',`${p.year}年 ${p.race} / ${nameBy(data.teams,p.team_id)} / ${p.leg}区 / ${nameBy(data.athletes,p.athlete_id)} / ${p.leg_time} / 区間${p.leg_rank??'—'}位`,'record')));
+ box.hidden=false;box.scrollIntoView({behavior:'smooth',block:'start'});
 }
-
-function render(){
- const q=search.value.trim().toLowerCase();
- const filtered=records.filter(r=>
-  [r.athlete,r.team,r.race,r.year].some(v=>
-   String(v||"").toLowerCase().includes(q)
-  )
- );
- status.textContent=`${filtered.length}件表示 / 全${records.length}件`;
- results.replaceChildren();
- if(!filtered.length){
-  addText(results,"div","該当する記録がありません","empty");
-  return;
- }
- const fragment=document.createDocumentFragment();
- for(const r of filtered.slice(0,300)){
-  const card=document.createElement("article");
-  card.className="card";
-  addText(card,"div",r.athlete||"選手名不明","name");
-  addText(card,"div",`${r.team||""} / ${r.year||""}年 / ${r.race||""}`,"meta");
-  addText(card,"div",`${r.leg||""}区　${r.leg_time||""}　区間${r.leg_rank||"-"}位`,"record");
-  fragment.appendChild(card);
- }
- results.appendChild(fragment);
-}
-
-Promise.all([
-  fetch("./data/results.csv"),
-  fetch("./results_2025.csv")
-])
-.then(responses => {
-  if (responses.some(r => !r.ok)) {
-    throw Error("CSVが見つかりません");
-  }
-  return Promise.all(responses.map(r => r.text()));
-})
-.then(texts => {
-  records = texts.flatMap(text =>
-    parseCSV(text.replace(/^\uFEFF/, ""))
-  );
-  render();
-})
-.catch(() => {
-  status.textContent = "データを読み込めませんでした。CSVの公開設定が必要です。";
-});
-search.addEventListener("input",render);
-</script>
-</body>
-</html>
+async function init(){try{
+ const names=['athletes','teams','races','performances','team_results'];const values=await Promise.all(names.map(async name=>{const r=await fetch(`./public_data/${name}.json`);if(!r.ok)throw Error(`${name}.json を取得できません (${r.status})`);return r.json()}));names.forEach((n,i)=>data[n]=values[i]);
+ [...new Set(data.races.map(r=>r.name))].forEach(n=>{const o=el('option',n);o.value=n;$('race').append(o)});
+ [...new Set(data.races.map(r=>r.year))].sort((a,b)=>b-a).forEach(y=>{const o=el('option',y);o.value=y;$('year').append(o)});
+ search();
+ }catch(e){$('status').textContent=`読み込みに失敗しました：${e.message}`;document.querySelectorAll('button').forEach(b=>b.disabled=true);}}
+$('form').addEventListener('submit',e=>{e.preventDefault();$('detail').hidden=true;search()});
+$('reset').addEventListener('click',()=>{$('form').reset();$('detail').hidden=true;search()});
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;limit=20;$('detail').hidden=true;render()}));
+$('more').addEventListener('click',()=>{limit+=20;render()});init();
+</script></body></html>
